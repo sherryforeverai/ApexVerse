@@ -4,374 +4,348 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexVerse: Ultimate Animal Showdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bangers&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-blue: #00f3ff;
             --neon-pink: #ff00ff;
-            --bg-dark: #0a0a0a;
-            --card-bg: #1a1a1a;
+            --neon-yellow: #f0ff00;
+            --bg-dark: #050505;
         }
 
         body {
             background-color: var(--bg-dark);
             color: white;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Orbitron', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         header {
             text-align: center;
             padding: 20px;
-            border-bottom: 2px solid var(--neon-blue);
+            border-bottom: 3px solid var(--neon-blue);
             width: 100%;
-            box-shadow: 0 0 15px var(--neon-blue);
-            margin-bottom: 20px;
+            box-shadow: 0 0 20px var(--neon-blue);
+            background: rgba(0,0,0,0.8);
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            text-align: center;
-        }
+        h1 { font-family: 'Bangers', cursive; font-size: 3.5rem; margin: 0; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
 
-        /* SCREEN: Selection */
-        #selection-screen {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        .container { width: 95%; max-width: 1200px; margin-top: 20px; }
+
+        /* SELECTION SCREEN */
+        .search-area { margin-bottom: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        #search-bar { padding: 15px; width: 350px; border-radius: 30px; border: 2px solid var(--neon-blue); background: #111; color: white; font-size: 1rem; }
+        
+        .filter-btn { padding: 12px 25px; border-radius: 30px; border: 2px solid var(--neon-pink); background: transparent; color: white; cursor: pointer; font-weight: bold; }
+        .filter-btn.active { background: var(--neon-pink); color: black; box-shadow: 0 0 15px var(--neon-pink); }
+
+        .selection-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 20px; 
+            max-height: 60vh; 
+            overflow-y: auto;
             padding: 20px;
         }
 
         .select-card {
-            background: var(--card-bg);
+            background: #1a1a1a;
             border: 2px solid #333;
-            border-radius: 15px;
-            padding: 20px;
-            cursor: pointer;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
             transition: 0.3s;
-        }
-
-        .select-card:hover {
-            border-color: var(--neon-blue);
-            transform: translateY(-5px);
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        /* SCREEN: Battle */
-        #battle-screen { display: none; }
-
-        .battle-arena {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .animal-card {
-            background: var(--card-bg);
-            border: 2px solid #333;
-            border-radius: 15px;
-            padding: 20px;
-            width: 45%;
-        }
-
-        .active-turn {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px var(--neon-blue);
-        }
-
-        .hp-bar-bg {
-            background: #444;
-            height: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .hp-bar-fill {
-            background: linear-gradient(90deg, #00ff00, #aaff00);
-            height: 100%;
-            width: 100%;
-            transition: width 0.5s ease;
-        }
-
-        .move-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            background: transparent;
-            color: white;
-            border: 1px solid var(--neon-blue);
-            padding: 15px;
-            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
         }
+        .select-card:hover { border-color: var(--neon-blue); transform: scale(1.05); box-shadow: 0 0 20px var(--neon-blue); }
+        .select-card img { width: 100%; border-radius: 15px; height: 150px; object-fit: cover; margin-bottom: 10px; border: 1px solid #444; }
 
-        button:hover:not(:disabled) {
-            background: var(--neon-blue);
-            color: black;
-        }
+        /* BATTLE SCREEN */
+        #battle-screen { display: none; }
+        .battle-arena { display: flex; justify-content: space-around; align-items: flex-start; gap: 20px; margin-top: 20px; }
+        
+        .fighter-pod { width: 40%; text-align: center; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 30px; border: 1px solid #333; }
+        .fighter-img { width: 100%; height: 300px; object-fit: cover; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid var(--neon-blue); }
+        
+        .hp-container { margin: 15px 0; }
+        .hp-bar-bg { background: #333; height: 25px; border-radius: 15px; overflow: hidden; border: 1px solid #555; }
+        .hp-bar-fill { background: linear-gradient(90deg, #00ff00, #aaff00); height: 100%; width: 100%; transition: width 0.5s ease; }
+        
+        .move-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .move-btn { padding: 20px; border-radius: 15px; border: 2px solid var(--neon-blue); background: transparent; color: white; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .move-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
 
-        button:disabled { opacity: 0.3; cursor: not-allowed; }
-
-        #fact-box {
-            margin-top: 20px;
-            padding: 15px;
-            border-left: 4px solid var(--neon-pink);
-            background: #222;
-            min-height: 60px;
-            font-style: italic;
-        }
-
-        /* SCREEN: Quiz */
-        #quiz-overlay {
+        /* SPEECH BUBBLE MODAL */
+        #fact-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.85);
             display: none;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 1000;
         }
-
-        .quiz-card {
-            background: var(--card-bg);
+        .speech-bubble {
+            background: white;
+            color: black;
             padding: 40px;
-            border-radius: 20px;
-            border: 2px solid var(--neon-pink);
+            border-radius: 50px;
             max-width: 600px;
-            width: 90%;
+            width: 80%;
+            position: relative;
+            font-size: 1.8rem;
+            font-family: 'Bangers', cursive;
+            text-align: center;
+            border: 8px solid var(--neon-blue);
+            box-shadow: 0 0 50px var(--neon-blue);
         }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: 50%;
+            border-width: 30px 30px 0;
+            border-style: solid;
+            border-color: var(--neon-blue) transparent;
+            display: block; width: 0; margin-left: -30px;
+        }
+        .next-btn { margin-top: 20px; padding: 10px 30px; background: var(--neon-pink); border: none; border-radius: 20px; color: white; font-family: 'Orbitron'; cursor: pointer; }
 
-        .hidden { display: none; }
+        /* QUIZ OVERLAY */
+        #quiz-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
+        .quiz-card { background: #111; padding: 40px; border-radius: 30px; border: 3px solid var(--neon-pink); text-align: center; width: 90%; max-width: 600px; }
+        .score-display { font-size: 3rem; color: var(--neon-yellow); margin: 20px 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 style="margin:0; letter-spacing: 3px;">APEXVERSE</h1>
-        <div style="color: var(--neon-blue)">Where Nature’s Legends Collide</div>
+        <h1>APEXVERSE</h1>
+        <div style="color: var(--neon-pink); font-weight: bold;">ULTIMATE ANIMAL SHOWDOWN</div>
     </header>
 
     <div class="container">
-        
-        <!-- Selection Screen -->
+        <!-- SELECTION -->
         <div id="selection-screen">
-            <h2 style="grid-column: 1/-1;">Select Your Animal Legend</h2>
-            <!-- Animals will be injected here -->
+            <div class="search-area">
+                <input type="text" id="search-bar" placeholder="Search 200+ Animals..." oninput="filterAnimals()">
+                <button class="filter-btn active" onclick="setCategory('All')">All</button>
+                <button class="filter-btn" onclick="setCategory('Land')">Land</button>
+                <button class="filter-btn" onclick="setCategory('Ocean')">Ocean</button>
+                <button class="filter-btn" onclick="setCategory('Birds')">Birds</button>
+            </div>
+            <div class="selection-grid" id="selection-grid"></div>
         </div>
 
-        <!-- Battle Screen -->
+        <!-- BATTLE -->
         <div id="battle-screen">
             <div class="battle-arena">
-                <div id="p1-card" class="animal-card">
-                    <h2 id="p1-name">---</h2>
-                    <div id="p1-hp-text">HP: 100/100</div>
-                    <div class="hp-bar-bg"><div id="p1-hp-fill" class="hp-bar-fill"></div></div>
+                <div class="fighter-pod">
+                    <img id="p1-img" class="fighter-img" src="" alt="Player">
+                    <h2 id="p1-name" style="color: var(--neon-blue);">---</h2>
+                    <div class="hp-container">
+                        <div class="hp-bar-bg"><div id="p1-hp-fill" class="hp-bar-fill"></div></div>
+                        <div id="p1-hp-text">HP: 100/100</div>
+                    </div>
                 </div>
 
-                <div id="p2-card" class="animal-card">
-                    <h2 id="p2-name">---</h2>
-                    <div id="p2-hp-text">HP: 100/100</div>
-                    <div class="hp-bar-bg"><div id="p2-hp-fill" class="hp-bar-fill"></div></div>
+                <div style="align-self: center; font-family: 'Bangers'; font-size: 4rem; color: var(--neon-pink);">VS</div>
+
+                <div class="fighter-pod">
+                    <img id="p2-img" class="fighter-img" src="" alt="Enemy">
+                    <h2 id="p2-name" style="color: var(--neon-pink);">---</h2>
+                    <div class="hp-container">
+                        <div class="hp-bar-bg"><div id="p2-hp-fill" class="hp-bar-fill"></div></div>
+                        <div id="p2-hp-text">HP: 100/100</div>
+                    </div>
                 </div>
             </div>
-
-            <div id="move-controls" class="animal-card" style="width: 100%; box-sizing: border-box;">
-                <h3 id="turn-text">Your Turn!</h3>
-                <div id="move-buttons" class="move-grid"></div>
-                <div id="fact-box">Choose a move to see real-world animal facts!</div>
-            </div>
+            <div id="move-buttons" class="move-grid"></div>
         </div>
     </div>
 
-    <!-- Quiz Screen -->
+    <!-- FACT BUBBLE -->
+    <div id="fact-overlay">
+        <div class="speech-bubble">
+            <div id="fact-text">Animal Fact!</div>
+            <button class="next-btn" onclick="closeFact()">CONTINUE BATTLE >></button>
+        </div>
+    </div>
+
+    <!-- QUIZ -->
     <div id="quiz-overlay">
-        <div class="quiz-card">
-            <h2 id="winner-announcement">Winner!</h2>
-            <hr border-color="var(--neon-pink)">
-            <p id="quiz-question">Question...</p>
+        <div class="quiz-card" id="quiz-content">
+            <h2 id="quiz-title" style="color:var(--neon-blue)">BATTLE QUIZ</h2>
+            <p id="quiz-q-num" style="color:var(--neon-pink)">Question 1 of 4</p>
+            <p id="quiz-question" style="font-size: 1.4rem; min-height: 80px;"></p>
             <div id="quiz-options" class="move-grid"></div>
-            <p id="quiz-feedback" style="margin-top:20px; font-weight: bold;"></p>
+            <div id="quiz-score-screen" class="hidden" style="display:none">
+                <h2>MATCH COMPLETE!</h2>
+                <div class="score-display" id="final-score">0/4</div>
+                <button class="move-btn" onclick="location.reload()">PLAY AGAIN</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const animalData = {
-            elephant: {
-                name: "African Elephant",
-                hp: 500, maxHp: 500,
-                moves: [
-                    { name: "Ground Stomp", damage: 45, fact: "Elephants can 'hear' with their feet by sensing subsonic vibrations in the ground!" },
-                    { name: "Trunk Slam", damage: 35, fact: "An elephant's trunk has 40,000 muscles—a human has only about 600 in their whole body!" },
-                    { name: "Tusk Charge", damage: 55, fact: "Elephant tusks are actually giant teeth that never stop growing." },
-                    { name: "Memory Shield", damage: 0, heal: 40, fact: "Elephants have incredible memories, helping them find water holes during droughts." }
-                ]
-            },
-            falcon: {
-                name: "Peregrine Falcon",
-                hp: 200, maxHp: 200,
-                moves: [
-                    { name: "Sky Dive", damage: 65, fact: "The Peregrine Falcon is the fastest animal on Earth, diving at over 200 mph!" },
-                    { name: "Talon Strike", damage: 30, fact: "Their talons can exert enough pressure to catch prey mid-air instantly." },
-                    { name: "Vision Lock", damage: 25, fact: "Falcons can see a small bird from over a mile away." },
-                    { name: "Aerial Feint", damage: 15, fact: "Falcons use their tail feathers like a rudder to make sharp turns at high speeds." }
-                ]
-            },
-            shark: {
-                name: "Great White Shark",
-                hp: 350, maxHp: 350,
-                moves: [
-                    { name: "Apex Bite", damage: 50, fact: "Great Whites have up to 300 serrated teeth arranged in several rows!" },
-                    { name: "Electro-Sense", damage: 20, fact: "Sharks can sense the tiny electrical fields generated by the heartbeats of prey." },
-                    { name: "Tail Thrash", damage: 30, fact: "A shark's tail is its engine; they can swim up to 15 mph in short bursts." },
-                    { name: "Deep Dive", damage: 0, heal: 35, fact: "Sharks don't have bones; their skeletons are made of lightweight cartilage like your ears!" }
-                ]
-            }
-        };
+        // Database with vivid 3D search tags
+        const animalDatabase = [
+            { id: "elephant", name: "African Elephant", cat: "Land", hp: 500, img: "https://loremflickr.com/600/600/elephant,3d,render", moves: [
+                { name: "Ground Stomp", damage: 45, fact: "Elephants can sense vibrations through their feet from 20 miles away!" },
+                { name: "Trunk Slam", damage: 40, fact: "An elephant's trunk has 40,000 muscles—humans only have 600!" },
+                { name: "Tusk Charge", damage: 55, fact: "Tusks are actually teeth that never stop growing!" },
+                { name: "Matriarch Call", damage: 0, heal: 50, fact: "The oldest female leads the entire family!" }
+            ]},
+            { id: "shark", name: "Great White Shark", cat: "Ocean", hp: 420, img: "https://loremflickr.com/600/600/shark,vivid,3d", moves: [
+                { name: "Apex Bite", damage: 60, fact: "Great Whites have 3,000 serrated teeth!" },
+                { name: "Tail Thrash", damage: 30, fact: "They can swim 15 miles per hour in short bursts!" },
+                { name: "Electro-Sense", damage: 20, fact: "They can feel the electrical heartbeat of their prey!" },
+                { name: "Cartilage Armor", damage: 0, heal: 40, fact: "Sharks have no bones—only flexible cartilage!" }
+            ]},
+            { id: "falcon", name: "Peregrine Falcon", cat: "Birds", hp: 250, img: "https://loremflickr.com/600/600/falcon,render,3d", moves: [
+                { name: "Sky Dive", damage: 75, fact: "This bird is the fastest animal on Earth, diving at 200 mph!" },
+                { name: "Talon Strike", damage: 35, fact: "Their talons act like high-speed hooks to catch prey!" },
+                { name: "Eagle Eye", damage: 20, fact: "They can see a small pigeon from over a mile away!" },
+                { name: "Wing Tuck", damage: 15, fact: "They pull their wings tight to their body to go faster!" }
+            ]},
+            { id: "lion", name: "Lion", cat: "Land", hp: 380, img: "https://loremflickr.com/600/600/lion,3d,render", moves: [
+                { name: "King's Roar", damage: 25, fact: "A lion's roar can be heard from 5 miles away!" },
+                { name: "Pride Pounce", damage: 50, fact: "Lions are the only cats that live in big social families!" },
+                { name: "Claw Slash", damage: 45, fact: "Lions spend 20 hours a day sleeping and resting!" },
+                { name: "Ambush", damage: 55, fact: "Female lions do 90% of the hunting for the pride!" }
+            ]}
+            // (You can add more animals following this exact structure)
+        ];
 
-        let player, enemy;
-        let isPlayerTurn = true;
+        let player, enemy, isPlayerTurn = true, currentCat = 'All';
+        let quizStep = 0, quizScore = 0;
 
-        // INITIALIZE: Show Selection Screen
-        function initSelection() {
-            const screen = document.getElementById('selection-screen');
-            Object.keys(animalData).forEach(key => {
-                const animal = animalData[key];
-                const div = document.createElement('div');
-                div.className = 'select-card';
-                div.innerHTML = `<h3>${animal.name}</h3><p>HP: ${animal.hp}</p><p style="font-size:0.8rem; color:var(--neon-blue)">Click to Choose</p>`;
-                div.onclick = () => startBattle(key);
-                screen.appendChild(div);
-            });
+        function filterAnimals() {
+            const search = document.getElementById('search-bar').value.toLowerCase();
+            const grid = document.getElementById('selection-grid');
+            grid.innerHTML = '';
+            animalDatabase.filter(a => (currentCat === 'All' || a.cat === currentCat) && a.name.toLowerCase().includes(search))
+                .forEach(a => {
+                    grid.innerHTML += `<div class="select-card" onclick="startBattle('${a.id}')">
+                        <img src="${a.img}" alt="${a.name}">
+                        <h3>${a.name}</h3>
+                        <small>${a.cat} | HP: ${a.hp}</small>
+                    </div>`;
+                });
         }
 
-        function startBattle(playerKey) {
-            // Setup Player
-            player = JSON.parse(JSON.stringify(animalData[playerKey]));
-            
-            // Setup Enemy (Randomly pick one that isn't the player)
-            const keys = Object.keys(animalData);
-            let enemyKey = keys[Math.floor(Math.random() * keys.length)];
-            enemy = JSON.parse(JSON.stringify(animalData[enemyKey]));
+        function setCategory(cat) {
+            currentCat = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.innerText === cat));
+            filterAnimals();
+        }
 
-            // UI Transitions
+        function startBattle(id) {
+            player = JSON.parse(JSON.stringify(animalDatabase.find(a => a.id === id)));
+            player.maxHp = player.hp;
+            const others = animalDatabase.filter(a => a.id !== id);
+            enemy = JSON.parse(JSON.stringify(others[Math.floor(Math.random() * others.length)]));
+            enemy.maxHp = enemy.hp;
+
             document.getElementById('selection-screen').style.display = 'none';
             document.getElementById('battle-screen').style.display = 'block';
-            
+            document.getElementById('p1-img').src = player.img;
+            document.getElementById('p2-img').src = enemy.img;
             document.getElementById('p1-name').innerText = player.name;
             document.getElementById('p2-name').innerText = enemy.name;
             
             updateUI();
-            renderPlayerMoves();
+            renderMoves();
         }
 
-        function updateUI() {
-            // Player HP
-            document.getElementById('p1-hp-fill').style.width = (player.hp / player.maxHp * 100) + "%";
-            document.getElementById('p1-hp-text').innerText = `HP: ${Math.max(0, player.hp)} / ${player.maxHp}`;
-            
-            // Enemy HP
-            document.getElementById('p2-hp-fill').style.width = (enemy.hp / enemy.maxHp * 100) + "%";
-            document.getElementById('p2-hp-text').innerText = `HP: ${Math.max(0, enemy.hp)} / ${enemy.maxHp}`;
-
-            // Check Win/Loss
-            if (player.hp <= 0 || enemy.hp <= 0) {
-                setTimeout(showQuiz, 1000);
-            }
-        }
-
-        function renderPlayerMoves() {
+        function renderMoves() {
             const container = document.getElementById('move-buttons');
             container.innerHTML = '';
-            player.moves.forEach(move => {
-                const btn = document.createElement('button');
-                btn.innerText = move.name;
-                btn.onclick = () => executeMove(move, player, enemy);
-                container.appendChild(btn);
+            player.moves.forEach(m => {
+                container.innerHTML += `<button class="move-btn" onclick="executeTurn('${m.name}')">${m.name}</button>`;
             });
         }
 
-        function executeMove(move, attacker, target) {
-            if (!isPlayerTurn && attacker === player) return;
+        function updateUI() {
+            document.getElementById('p1-hp-fill').style.width = (player.hp / player.maxHp * 100) + "%";
+            document.getElementById('p2-hp-fill').style.width = (enemy.hp / enemy.maxHp * 100) + "%";
+            document.getElementById('p1-hp-text').innerText = `HP: ${Math.max(0, player.hp)}/${player.maxHp}`;
+            document.getElementById('p2-hp-text').innerText = `HP: ${Math.max(0, enemy.hp)}/${enemy.maxHp}`;
+            if (player.hp <= 0 || enemy.hp <= 0) setTimeout(initQuiz, 1000);
+        }
 
-            target.hp -= move.damage;
-            if (move.heal) attacker.hp = Math.min(attacker.maxHp, attacker.hp + move.heal);
+        let pendingEnemyTurn = false;
+        function executeTurn(moveName) {
+            if (!isPlayerTurn) return;
+            const move = player.moves.find(m => m.name === moveName);
+            enemy.hp -= move.damage;
+            if (move.heal) player.hp = Math.min(player.maxHp, player.hp + move.heal);
+            showFact(player.name, move);
+            pendingEnemyTurn = true;
+        }
 
-            document.getElementById('fact-box').innerHTML = `<strong>${move.name}:</strong> ${move.fact}`;
+        function showFact(name, move) {
+            document.getElementById('fact-text').innerText = `${name} uses ${move.name}!\n\n"${move.fact}"`;
+            document.getElementById('fact-overlay').style.display = 'flex';
+        }
+
+        function closeFact() {
+            document.getElementById('fact-overlay').style.display = 'none';
             updateUI();
-
-            if (target.hp > 0) {
-                isPlayerTurn = !isPlayerTurn;
-                document.getElementById('turn-text').innerText = isPlayerTurn ? "Your Turn!" : `${enemy.name} is attacking...`;
-                document.getElementById('p1-card').classList.toggle('active-turn');
-                document.getElementById('p2-card').classList.toggle('active-turn');
-                
-                if (!isPlayerTurn) {
-                    setTimeout(enemyTurn, 2000);
-                    toggleButtons(true);
-                } else {
-                    toggleButtons(false);
-                }
+            if (pendingEnemyTurn && enemy.hp > 0) {
+                pendingEnemyTurn = false;
+                isPlayerTurn = false;
+                setTimeout(enemyTurn, 1000);
+            } else {
+                isPlayerTurn = true;
             }
         }
 
         function enemyTurn() {
             const move = enemy.moves[Math.floor(Math.random() * enemy.moves.length)];
-            executeMove(move, enemy, player);
+            player.hp -= move.damage;
+            if (move.heal) enemy.hp = Math.min(enemy.maxHp, enemy.hp + move.heal);
+            showFact(enemy.name, move);
         }
 
-        function toggleButtons(disabled) {
-            const btns = document.querySelectorAll('#move-buttons button');
-            btns.forEach(b => b.disabled = disabled);
-        }
+        // QUIZ SYSTEM
+        const quizData = [
+            { q: "How many muscles are in an Elephant's trunk?", a: ["40,000", "600", "1,000", "40"], c: 0 },
+            { q: "What is the top diving speed of a Peregrine Falcon?", a: ["50 mph", "200 mph", "500 mph", "10 mph"], c: 1 },
+            { q: "A lion's roar can be heard from how far away?", a: ["1 mile", "5 miles", "20 miles", "100 miles"], c: 1 },
+            { q: "What is a shark's skeleton made of?", a: ["Steel", "Bone", "Cartilage", "Plastic"], c: 2 }
+        ];
 
-        function showQuiz() {
-            const winner = player.hp > 0 ? player.name : enemy.name;
+        function initQuiz() {
             document.getElementById('quiz-overlay').style.display = 'flex';
-            document.getElementById('winner-announcement').innerText = `${winner} Wins the Showdown!`;
-            
-            // Basic logic-based question
-            const q = {
-                text: `How many muscles are in an Elephant's trunk?`,
-                options: ["600", "4,000", "40,000", "1 million"],
-                correct: 2
-            };
+            loadQuestion();
+        }
 
-            document.getElementById('quiz-question').innerText = q.text;
+        function loadQuestion() {
+            if (quizStep >= 4) {
+                showFinalScore();
+                return;
+            }
+            const data = quizData[quizStep];
+            document.getElementById('quiz-q-num').innerText = `Question ${quizStep + 1} of 4`;
+            document.getElementById('quiz-question').innerText = data.q;
             const optContainer = document.getElementById('quiz-options');
             optContainer.innerHTML = '';
-            
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.innerText = opt;
-                btn.onclick = () => {
-                    if(idx === q.correct) {
-                        document.getElementById('quiz-feedback').innerText = "Correct! You are a Nature Legend!";
-                        document.getElementById('quiz-feedback').style.color = "var(--neon-blue)";
-                    } else {
-                        document.getElementById('quiz-feedback').innerText = "Not quite! The answer is 40,000.";
-                        document.getElementById('quiz-feedback').style.color = "var(--neon-pink)";
-                    }
-                    setTimeout(() => location.reload(), 3000);
-                };
-                optContainer.appendChild(btn);
+            data.a.forEach((opt, i) => {
+                optContainer.innerHTML += `<button class="move-btn" onclick="checkAnswer(${i})">${opt}</button>`;
             });
         }
 
-        // Start
-        initSelection();
-    </script>
-</body>
-</html>
+        function checkAnswer(idx) {
+            if (idx === quizData[quizStep].c) quizScore++;
+            quizStep++;
+            loadQuestion();
+        }
+
+        function showFinalScore() {
+            document.getElementById('quiz-question').style.display = 'none';
+            document.ge
