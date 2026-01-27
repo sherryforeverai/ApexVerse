@@ -348,4 +348,13 @@
 
         function showFinalScore() {
             document.getElementById('quiz-question').style.display = 'none';
-            document.ge
+            document.getElementById('quiz-options').style.display = 'none';
+            document.getElementById('quiz-q-num').style.display = 'none';
+            document.getElementById('quiz-score-screen').style.display = 'block';
+            document.getElementById('final-score').innerText = `${quizScore} / 4`;
+        }
+
+        filterAnimals();
+    </script>
+</body>
+</html>
