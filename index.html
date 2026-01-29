@@ -223,7 +223,7 @@
     .fighter.p2{ box-shadow: inset 0 0 0 2px rgba(124,199,255,.08); }
     .fighterTop{display:flex; align-items:center; justify-content:space-between; gap:10px;}
     .fighterName{display:flex; align-items:center; gap:10px; font-weight:900;}
-    .fighterName .emoji{ font-size:40px }
+    .fighterName .emoji{ font-size:44px }
     .mini{font-size:11px;color:var(--muted);font-weight:800;}
     .hpbar{
       height:14px; background: rgba(255,255,255,.06);
@@ -247,26 +247,33 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
       margin-top:16px;
     }
-    .log{
-      border-radius: 18px;
-      border: var(--border);
-      background: rgba(0,0,0,.18);
-      padding:12px;
-      height: 210px;
-      overflow:auto;
-      font-size:12px;
-      line-height:1.35;
-    }
-    .log .entry{
-      padding:10px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.06);
-      background: rgba(255,255,255,.03);
-      margin-bottom:10px;
-    }
-    .log .entry b{ color: var(--text) }
-    .log .meta{ color: var(--muted); margin-top:6px; }
 
+    /* Sprite motion */
+    .sprite{
+      display:inline-block;
+      transform-origin: 50% 70%;
+      animation: idleBob 1.6s ease-in-out infinite;
+      will-change: transform;
+    }
+    .sprite.p1{ animation-delay: .05s; }
+    .sprite.p2{ animation-delay: .25s; }
+    @keyframes idleBob{
+      0%{ transform: translateY(0) rotate(0deg); }
+      50%{ transform: translateY(-2px) rotate(-1deg); }
+      100%{ transform: translateY(0) rotate(0deg); }
+    }
+    .attackP1{ animation: attackP1 .35s ease; }
+    .attackP2{ animation: attackP2 .35s ease; }
+    @keyframes attackP1{
+      0%{ transform: translateX(0) translateY(0) scale(1); }
+      45%{ transform: translateX(12px) translateY(-2px) scale(1.06); }
+      100%{ transform: translateX(0) translateY(0) scale(1); }
+    }
+    @keyframes attackP2{
+      0%{ transform: translateX(0) translateY(0) scale(1); }
+      45%{ transform: translateX(-12px) translateY(-2px) scale(1.06); }
+      100%{ transform: translateX(0) translateY(0) scale(1); }
+    }
     .hit{ animation: hit .35s ease; }
     @keyframes hit{
       0%{ transform: translateX(0) }
@@ -303,18 +310,39 @@
     }
     @media (max-width: 420px){ .moveBtns{ grid-template-columns: 1fr; } }
 
+    .log{
+      border-radius: 18px;
+      border: var(--border);
+      background: rgba(0,0,0,.18);
+      padding:12px;
+      height: 210px;
+      overflow:auto;
+      font-size:12px;
+      line-height:1.35;
+    }
+    .log .entry{
+      padding:10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      margin-bottom:10px;
+    }
+    .log .entry b{ color: var(--text) }
+    .log .meta{ color: var(--muted); margin-top:6px; }
+
+    /* Pop fact (2-3s) */
     .popFact{
       position: absolute;
       left: 50%;
       top: 14px;
       transform: translateX(-50%);
-      width: min(720px, calc(100% - 24px));
+      width: min(760px, calc(100% - 24px));
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(16,26,43,.92);
       box-shadow: var(--shadow);
       padding: 12px 14px;
-      z-index: 50;
+      z-index: 80;
       display:none;
     }
     .popFact.show{
@@ -334,6 +362,43 @@
       color: rgba(255,255,255,.88);
       font-size: 13px;
       line-height:1.35;
+    }
+
+    /* BIG winner overlay */
+    .winOverlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      place-items:center;
+      z-index: 120;
+      background: radial-gradient(600px 320px at 50% 40%, rgba(0,0,0,.35), rgba(0,0,0,.0));
+      pointer-events:none;
+    }
+    .winOverlay.show{ display:grid; animation: overlayIn .18s ease; }
+    @keyframes overlayIn{
+      from{ opacity:0; transform: scale(.98); }
+      to{ opacity:1; transform: scale(1); }
+    }
+    .winBox{
+      width: min(860px, calc(100% - 26px));
+      text-align:center;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(16,26,43,.92);
+      box-shadow: var(--shadow);
+      padding: 18px 16px;
+    }
+    .winBox .big{
+      font-size: clamp(34px, 4.8vw, 64px);
+      font-weight: 1000;
+      letter-spacing: .3px;
+      line-height: 1.05;
+      margin: 0 0 8px;
+    }
+    .winBox .small{
+      color: rgba(255,255,255,.85);
+      font-size: 14px;
+      margin: 0;
     }
 
     /* Quiz */
@@ -400,14 +465,14 @@
     <div class="logo">WW</div>
     <div>
       <h1>Who Would Win? <span style="color:rgba(255,255,255,.6);font-weight:800">Player Battle + Quiz</span></h1>
-      <div class="sub">Pick two animals → take turns using moves → read fun facts → quiz → back home</div>
+      <div class="sub">Pick two animals → take turns using moves → big winner splash → quiz → back home</div>
     </div>
   </div>
   <div class="pillbar">
-    <div class="pill">🎮 Player-controlled turns</div>
+    <div class="pill">🎮 Turn-based</div>
     <div class="pill">🧩 4 moves each</div>
-    <div class="pill">🦁 35 animals</div>
-    <div class="pill">🧠 Quiz from facts shown</div>
+    <div class="pill">🦁 60+ animals</div>
+    <div class="pill">🏆 Big winner splash</div>
   </div>
 </header>
 
@@ -431,7 +496,7 @@
             <select id="categorySelect" class="select">
               <option value="All">All categories</option>
             </select>
-            <input id="searchInput" class="search" placeholder="Search animals… (tiger, shark, falcon…)" />
+            <input id="searchInput" class="search" placeholder="Search animals… (tiger, whale, owl…)" />
           </div>
           <div class="rightControls">
             <span class="hint" id="pickHint">Now picking: <b>Player 1</b></span>
@@ -449,6 +514,13 @@
             <div class="popFact" id="popFact">
               <div class="t" id="popTitle">Fun Fact</div>
               <div class="f" id="popBody">…</div>
+            </div>
+
+            <div class="winOverlay" id="winOverlay">
+              <div class="winBox">
+                <p class="big" id="winBig">🏆 WINNER!</p>
+                <p class="small" id="winSmall">Nice!</p>
+              </div>
             </div>
 
             <div class="arenaRow">
@@ -481,7 +553,6 @@
           <div class="controls">
             <div class="leftControls">
               <button id="startBattleBtn" class="btn primary">Start Battle!</button>
-              <button id="homeBtn" class="btn" style="display:none">🏠 Back to Home</button>
             </div>
             <div class="rightControls">
               <span class="hint" id="turnHint">Ready…</span>
@@ -507,14 +578,14 @@
     <div class="hd">
       <div>
         <h2>Status</h2>
-        <p>Turn-based: click a move button to attack. Fun facts pop up for readability.</p>
+        <p>Click a move button to attack. Big winner splash appears on victory.</p>
       </div>
     </div>
     <div class="bd">
       <div class="card" style="background:rgba(255,255,255,.02); box-shadow:none; border:var(--border)">
         <div class="bd" style="display:grid;gap:10px">
-          <div class="hint"><b>Damage idea:</b> move power × attacker stats with a matchup bonus vs opponent.</div>
-          <div class="hint"><b>Quiz:</b> pulled from the fun facts shown during THIS battle.</div>
+          <div class="hint"><b>Damage:</b> move power × attacker stats with a matchup bonus vs opponent.</div>
+          <div class="hint"><b>Quiz:</b> questions are built from the fun facts you just saw.</div>
         </div>
       </div>
 
@@ -534,117 +605,163 @@
 
 <footer>
   <div class="tinyNote">
-    Tip: Want even more animals? Add more entries in the DATA section. Each animal gets 4 moves automatically.
+    Tip: You can add even more animals by copying one mkAnimal(...) line in the DATA section.
   </div>
 </footer>
 
 <script>
 /* =========================================
-   DATA
-   - Each animal has stats (1..10)
-   - Each animal has a PRIMARY signature move + fun fact
-   - We auto-generate 3 more moves so every animal has 4 total moves
+   DATA (now 60+ animals)
+   - Stats are 1..10
+   - Each has PRIMARY move + fact
+   - We auto-generate 3 more moves so each has 4 total
    ========================================= */
 
 const ANIMALS = [
-  // LAND
-  mkAnimal("Tiger","Land","🐯", {size:7,str:9,spd:7}, "Pounce & Bite", 1.10, "Tigers can leap forward several meters when they pounce!"),
-  mkAnimal("Lion","Land","🦁", {size:8,str:9,spd:6}, "Roaring Rush", 1.05, "A lion’s roar can be heard from several kilometers away."),
-  mkAnimal("Elephant","Land","🐘", {size:10,str:10,spd:4}, "Trunk Slam", 1.00, "Elephants use their trunks like a super-tool for smelling, grabbing, and spraying water."),
-  mkAnimal("Cheetah","Land","🐆", {size:6,str:6,spd:10}, "Lightning Sprint", 1.05, "Cheetahs are famous for super-fast sprints (in short bursts)."),
-  mkAnimal("Gorilla","Land","🦍", {size:8,str:10,spd:5}, "Chest-Beat Crush", 1.05, "Gorillas communicate with sounds, gestures, and facial expressions."),
-  mkAnimal("Gray Wolf","Land","🐺", {size:6,str:7,spd:7}, "Pack Tactics", 1.00, "Wolves are social and often work together as a pack."),
-  mkAnimal("Brown Bear","Land","🐻", {size:9,str:9,spd:5}, "Bear Hug Bash", 1.00, "Bears can have an excellent sense of smell."),
-  mkAnimal("Moose","Land","🫎", {size:9,str:8,spd:5}, "Antler Charge", 0.98, "Moose can be surprisingly quick for their size."),
-  mkAnimal("Kangaroo","Land","🦘", {size:6,str:7,spd:8}, "Boomer Kick", 1.02, "Kangaroos use powerful hind legs for hopping and kicking."),
-  mkAnimal("Rhino","Land","🦏", {size:9,str:9,spd:6}, "Horn Rush", 1.00, "Rhino skin can look armor-like, but it’s still sensitive."),
-  mkAnimal("Hippo","Land","🦛", {size:9,str:9,spd:6}, "River Ram", 1.02, "Hippos spend lots of time in water to stay cool."),
-  mkAnimal("Zebra","Land","🦓", {size:6,str:5,spd:7}, "Stripe Sprint", 0.93, "Zebra stripes are unique—like fingerprints."),
-  mkAnimal("Polar Bear","Land","🐻‍❄️", {size:9,str:9,spd:6}, "Ice Breaker", 1.03, "Polar bears have thick fur and fat to handle cold climates."),
-  mkAnimal("Honey Badger","Land","🦡", {size:4,str:7,spd:6}, "Fearless Frenzy", 1.00, "Honey badgers are famous for being very tough and bold."),
-  mkAnimal("Giraffe","Land","🦒", {size:10,str:7,spd:6}, "Neck Swing", 0.98, "Giraffes have long necks to reach high leaves."),
+  // LAND (original + more)
+  mkAnimal("Tiger","Land","🐯",{size:7,str:9,spd:7},"Pounce & Bite",1.10,"Tigers can leap forward several meters when they pounce!"),
+  mkAnimal("Lion","Land","🦁",{size:8,str:9,spd:6},"Roaring Rush",1.05,"A lion’s roar can be heard from several kilometers away."),
+  mkAnimal("Elephant","Land","🐘",{size:10,str:10,spd:4},"Trunk Slam",1.00,"Elephants use their trunks like a super-tool for smelling, grabbing, and spraying water."),
+  mkAnimal("Cheetah","Land","🐆",{size:6,str:6,spd:10},"Lightning Sprint",1.05,"Cheetahs are famous for super-fast sprints (in short bursts)."),
+  mkAnimal("Gorilla","Land","🦍",{size:8,str:10,spd:5},"Chest-Beat Crush",1.05,"Gorillas communicate with sounds, gestures, and facial expressions."),
+  mkAnimal("Gray Wolf","Land","🐺",{size:6,str:7,spd:7},"Pack Tactics",1.00,"Wolves are social and often work together as a pack."),
+  mkAnimal("Brown Bear","Land","🐻",{size:9,str:9,spd:5},"Bear Hug Bash",1.00,"Bears can have an excellent sense of smell."),
+  mkAnimal("Moose","Land","🫎",{size:9,str:8,spd:5},"Antler Charge",0.98,"Moose can be surprisingly quick for their size."),
+  mkAnimal("Kangaroo","Land","🦘",{size:6,str:7,spd:8},"Boomer Kick",1.02,"Kangaroos use powerful hind legs for hopping and kicking."),
+  mkAnimal("Rhino","Land","🦏",{size:9,str:9,spd:6},"Horn Rush",1.00,"Rhino skin can look armor-like, but it’s still sensitive."),
+  mkAnimal("Hippo","Land","🦛",{size:9,str:9,spd:6},"River Ram",1.02,"Hippos spend lots of time in water to stay cool."),
+  mkAnimal("Zebra","Land","🦓",{size:6,str:5,spd:7},"Stripe Sprint",0.93,"Zebra stripes are unique—like fingerprints."),
+  mkAnimal("Polar Bear","Land","🐻‍❄️",{size:9,str:9,spd:6},"Ice Breaker",1.03,"Polar bears have thick fur and fat to handle cold climates."),
+  mkAnimal("Honey Badger","Land","🦡",{size:4,str:7,spd:6},"Fearless Frenzy",1.00,"Honey badgers are famous for being very tough and bold."),
+  mkAnimal("Giraffe","Land","🦒",{size:10,str:7,spd:6},"Neck Swing",0.98,"Giraffes have long necks to reach high leaves."),
+  // added Land
+  mkAnimal("Leopard","Land","🐆",{size:6,str:7,spd:8},"Shadow Pounce",1.04,"Leopards are great climbers and can haul prey into trees."),
+  mkAnimal("Hyena","Land","🦊",{size:6,str:7,spd:7},"Laughing Lunge",1.01,"Hyenas have powerful jaws for crunching tough food."),
+  mkAnimal("Wild Boar","Land","🐗",{size:6,str:7,spd:6},"Tusk Charge",1.01,"Boars can dig and push with strong snouts."),
+  mkAnimal("Horse","Land","🐴",{size:8,str:7,spd:8},"Thunder Gallop",1.02,"Horses can run fast and are built for endurance."),
+  mkAnimal("Camel","Land","🐫",{size:8,str:7,spd:6},"Desert Dash",0.99,"Camels can go a long time without drinking water."),
+  mkAnimal("Giant Panda","Land","🐼",{size:7,str:7,spd:4},"Bamboo Bash",0.96,"Pandas eat lots of bamboo every day."),
+  mkAnimal("Wolverine","Land","🦡",{size:5,str:8,spd:6},"Fierce Frenzy",1.03,"Wolverines have a reputation for being tough and determined."),
+  mkAnimal("Meerkat","Land","🐹",{size:3,str:3,spd:7},"Lookout Leap",0.92,"Meerkats take turns standing guard for danger."),
+  mkAnimal("Bison","Land","🐃",{size:9,str:9,spd:6},"Stampede Smash",1.01,"Bison can run surprisingly fast despite being huge."),
+  mkAnimal("Snow Leopard","Land","🐆",{size:6,str:7,spd:8},"Cliffbound Pounce",1.03,"Snow leopards have long tails that help with balance."),
 
-  // OCEAN
-  mkAnimal("Great White Shark","Ocean","🦈", {size:9,str:9,spd:7}, "Power Bite", 1.08, "Sharks have rows of teeth and can replace lost teeth over time."),
-  mkAnimal("Orca","Ocean","🐋", {size:9,str:9,spd:7}, "Wave Ram", 1.06, "Orcas are actually dolphins (the biggest kind)."),
-  mkAnimal("Giant Squid","Ocean","🦑", {size:8,str:8,spd:6}, "Ink Cloud", 1.03, "Many squids can release ink to confuse predators."),
-  mkAnimal("Sea Turtle","Ocean","🐢", {size:6,str:5,spd:5}, "Shell Smash", 0.92, "Sea turtles travel long distances between feeding areas and nesting beaches."),
-  mkAnimal("Dolphin","Ocean","🐬", {size:6,str:6,spd:8}, "Echo Dash", 1.00, "Dolphins use echolocation—sound—to help navigate and find food."),
-  mkAnimal("Manta Ray","Ocean","🪼", {size:7,str:5,spd:7}, "Glide Sweep", 0.95, "Manta rays ‘fly’ through water with wide fins."),
-  mkAnimal("Sea Lion","Ocean","🦭", {size:6,str:6,spd:7}, "Whirlpool Spin", 0.98, "Sea lions are great swimmers and can move quickly underwater."),
-  mkAnimal("Hammerhead Shark","Ocean","🦈", {size:8,str:8,spd:7}, "Side-Sweep Bite", 1.04, "Hammerheads have wide heads that help them sense prey better."),
-  mkAnimal("Electric Eel","Ocean","⚡🐟", {size:6,str:7,spd:6}, "Zap Burst", 1.03, "Electric eels can generate strong electric shocks."),
-  mkAnimal("Octopus","Ocean","🐙", {size:6,str:7,spd:6}, "Tentacle Tangle", 1.00, "Octopuses are known for being clever problem-solvers."),
+  // OCEAN (original + more)
+  mkAnimal("Great White Shark","Ocean","🦈",{size:9,str:9,spd:7},"Power Bite",1.08,"Sharks have rows of teeth and can replace lost teeth over time."),
+  mkAnimal("Orca","Ocean","🐋",{size:9,str:9,spd:7},"Wave Ram",1.06,"Orcas are actually dolphins (the biggest kind)."),
+  mkAnimal("Giant Squid","Ocean","🦑",{size:8,str:8,spd:6},"Ink Cloud",1.03,"Many squids can release ink to confuse predators."),
+  mkAnimal("Sea Turtle","Ocean","🐢",{size:6,str:5,spd:5},"Shell Smash",0.92,"Sea turtles travel long distances between feeding areas and nesting beaches."),
+  mkAnimal("Dolphin","Ocean","🐬",{size:6,str:6,spd:8},"Echo Dash",1.00,"Dolphins use echolocation—sound—to help navigate and find food."),
+  mkAnimal("Manta Ray","Ocean","🪼",{size:7,str:5,spd:7},"Glide Sweep",0.95,"Manta rays ‘fly’ through water with wide fins."),
+  mkAnimal("Sea Lion","Ocean","🦭",{size:6,str:6,spd:7},"Whirlpool Spin",0.98,"Sea lions are great swimmers and can move quickly underwater."),
+  mkAnimal("Hammerhead Shark","Ocean","🦈",{size:8,str:8,spd:7},"Side-Sweep Bite",1.04,"Hammerheads have wide heads that help them sense prey better."),
+  mkAnimal("Electric Eel","Ocean","⚡🐟",{size:6,str:7,spd:6},"Zap Burst",1.03,"Electric eels can generate strong electric shocks."),
+  mkAnimal("Octopus","Ocean","🐙",{size:6,str:7,spd:6},"Tentacle Tangle",1.00,"Octopuses are known for being clever problem-solvers."),
+  // added Ocean
+  mkAnimal("Narwhal","Ocean","🦄",{size:8,str:7,spd:6},"Tusk Thrust",1.02,"Narwhals are known for a long tusk that looks like a unicorn horn."),
+  mkAnimal("Blue Whale","Ocean","🐋",{size:10,str:8,spd:5},"Titan Tail Slam",1.01,"Blue whales are the largest animals known to have lived."),
+  mkAnimal("Piranha","Ocean","🐟",{size:3,str:6,spd:7},"Frenzy Nibble",0.98,"Piranhas are fish with sharp teeth and quick bites."),
+  mkAnimal("Moray Eel","Ocean","🐍",{size:5,str:6,spd:6},"Hidden Snap",1.00,"Moray eels often hide in rocks and strike quickly."),
+  mkAnimal("Jellyfish","Ocean","🪼",{size:4,str:5,spd:5},"Sting Drift",0.97,"Some jellyfish sting using tiny cells called nematocysts."),
+  mkAnimal("Crab","Ocean","🦀",{size:3,str:5,spd:6},"Sideways Snip",0.95,"Crabs can walk sideways using jointed legs."),
+  mkAnimal("Lobster","Ocean","🦞",{size:5,str:6,spd:5},"Claw Clamp",0.98,"Lobsters have strong claws for grabbing and defending."),
+  mkAnimal("Swordfish","Ocean","🐟",{size:7,str:7,spd:8},"Blade Dash",1.03,"Swordfish can swim fast and have a long bill."),
+  mkAnimal("Seal","Ocean","🦭",{size:6,str:5,spd:7},"Slipstream Slide",0.97,"Seals are built for smooth swimming in cold water."),
+  mkAnimal("Penguin","Ocean","🐧",{size:4,str:4,spd:6},"Torpedo Swim",0.96,"Penguins can’t fly, but they ‘fly’ through water with their flippers."),
 
-  // BIRDS
-  mkAnimal("Peregrine Falcon","Birds","🦅", {size:5,str:6,spd:10}, "Sky Dive Strike", 1.10, "Peregrine falcons are famous for extremely fast dives."),
-  mkAnimal("Bald Eagle","Birds","🦅", {size:6,str:7,spd:7}, "Talon Grab", 1.02, "Eagles have powerful talons for grabbing prey."),
-  mkAnimal("Owl","Birds","🦉", {size:4,str:5,spd:6}, "Silent Swoop", 0.98, "Owls can fly very quietly compared to many other birds."),
-  mkAnimal("Hummingbird","Birds","🐦", {size:2,str:3,spd:10}, "Hover Jab", 0.92, "Hummingbirds can hover in place while feeding."),
-  mkAnimal("Cassowary","Birds","🦤", {size:7,str:8,spd:7}, "Dino Kick", 1.06, "Cassowaries are big, powerful birds—often called ‘dinosaur-like.’"),
-  mkAnimal("Peacock","Birds","🦚", {size:4,str:3,spd:5}, "Fan Flare", 0.88, "Peacocks can fan out colorful tail feathers to impress."),
+  // BIRDS (original + more)
+  mkAnimal("Peregrine Falcon","Birds","🦅",{size:5,str:6,spd:10},"Sky Dive Strike",1.10,"Peregrine falcons are famous for extremely fast dives."),
+  mkAnimal("Bald Eagle","Birds","🦅",{size:6,str:7,spd:7},"Talon Grab",1.02,"Eagles have powerful talons for grabbing prey."),
+  mkAnimal("Owl","Birds","🦉",{size:4,str:5,spd:6},"Silent Swoop",0.98,"Owls can fly very quietly compared to many other birds."),
+  mkAnimal("Hummingbird","Birds","🐦",{size:2,str:3,spd:10},"Hover Jab",0.92,"Hummingbirds can hover in place while feeding."),
+  mkAnimal("Cassowary","Birds","🦤",{size:7,str:8,spd:7},"Dino Kick",1.06,"Cassowaries are big, powerful birds—often called ‘dinosaur-like.’"),
+  mkAnimal("Peacock","Birds","🦚",{size:4,str:3,spd:5},"Fan Flare",0.88,"Peacocks can fan out colorful tail feathers to impress."),
+  // added Birds
+  mkAnimal("Albatross","Birds","🕊️",{size:6,str:5,spd:8},"Ocean Glide",0.99,"Albatrosses can soar long distances over the ocean."),
+  mkAnimal("Woodpecker","Birds","🐦",{size:3,str:4,spd:6},"Drum Tap",0.94,"Woodpeckers peck wood to find insects and make nests."),
+  mkAnimal("Toucan","Birds","🦜",{size:4,str:4,spd:6},"Beak Bonk",0.95,"Toucans have large beaks that help them reach fruit."),
+  mkAnimal("Swan","Birds","🦢",{size:6,str:5,spd:6},"Wing Sweep",0.96,"Swans are strong swimmers and can be protective."),
+  mkAnimal("Raven","Birds","🐦",{size:4,str:5,spd:7},"Clever Feint",0.98,"Ravens are known for being very smart birds."),
 
-  // REPTILES
-  mkAnimal("Komodo Dragon","Reptiles","🦎", {size:7,str:8,spd:6}, "Rending Bite", 1.05, "Komodo dragons are the largest living lizards."),
-  mkAnimal("King Cobra","Reptiles","🐍", {size:5,str:8,spd:7}, "Venom Feint", 1.03, "Cobras can spread a hood to look bigger and scary."),
-  mkAnimal("Alligator","Reptiles","🐊", {size:8,str:9,spd:6}, "Clamp & Roll", 1.06, "Alligators can do a powerful ‘death roll’ in water."),
-  mkAnimal("Chameleon","Reptiles","🦎", {size:3,str:3,spd:4}, "Tongue Snap", 0.90, "Chameleons can shoot out their tongues super fast to catch insects."),
-  mkAnimal("Rattlesnake","Reptiles","🐍", {size:4,str:7,spd:6}, "Rattle Warning Strike", 1.02, "Rattlesnakes can warn with a rattling tail sound."),
-  mkAnimal("Anaconda","Reptiles","🐍", {size:8,str:9,spd:5}, "Coil Crush", 1.05, "Big constrictor snakes squeeze to subdue prey."),
+  // REPTILES (original + more)
+  mkAnimal("Komodo Dragon","Reptiles","🦎",{size:7,str:8,spd:6},"Rending Bite",1.05,"Komodo dragons are the largest living lizards."),
+  mkAnimal("King Cobra","Reptiles","🐍",{size:5,str:8,spd:7},"Venom Feint",1.03,"Cobras can spread a hood to look bigger and scary."),
+  mkAnimal("Alligator","Reptiles","🐊",{size:8,str:9,spd:6},"Clamp & Roll",1.06,"Alligators can do a powerful ‘death roll’ in water."),
+  mkAnimal("Chameleon","Reptiles","🦎",{size:3,str:3,spd:4},"Tongue Snap",0.90,"Chameleons can shoot out their tongues super fast to catch insects."),
+  mkAnimal("Rattlesnake","Reptiles","🐍",{size:4,str:7,spd:6},"Rattle Warning Strike",1.02,"Rattlesnakes can warn with a rattling tail sound."),
+  mkAnimal("Anaconda","Reptiles","🐍",{size:8,str:9,spd:5},"Coil Crush",1.05,"Big constrictor snakes squeeze to subdue prey."),
+  // added Reptiles
+  mkAnimal("Iguana","Reptiles","🦎",{size:4,str:4,spd:5},"Tail Whip",0.95,"Iguanas can use their tails for defense."),
+  mkAnimal("Gecko","Reptiles","🦎",{size:2,str:3,spd:7},"Wall Dash",0.93,"Geckos can stick to walls using special toe pads."),
+  mkAnimal("Tortoise","Reptiles","🐢",{size:7,str:4,spd:2},"Fortress Shell",0.92,"Tortoises are known for protective shells and slow movement."),
+  mkAnimal("Crocodile","Reptiles","🐊",{size:9,str:9,spd:6},"Ambush Clamp",1.06,"Crocodiles often wait quietly before striking quickly."),
 
-  // AMPHIBIANS
-  mkAnimal("Poison Dart Frog","Amphibians","🐸", {size:2,str:4,spd:5}, "Toxic Touch", 0.92, "Some dart frogs have bright colors that warn predators: ‘Don’t eat me!’"),
-  mkAnimal("Bullfrog","Amphibians","🐸", {size:3,str:4,spd:5}, "Splash Lunge", 0.90, "Frogs can use strong back legs to leap."),
-  mkAnimal("Salamander","Amphibians","🦎", {size:3,str:3,spd:4}, "Slippery Escape", 0.88, "Some salamanders have slippery skin that can help them avoid predators."),
+  // AMPHIBIANS (original + more)
+  mkAnimal("Poison Dart Frog","Amphibians","🐸",{size:2,str:4,spd:5},"Toxic Touch",0.92,"Some dart frogs have bright colors that warn predators: ‘Don’t eat me!’"),
+  mkAnimal("Bullfrog","Amphibians","🐸",{size:3,str:4,spd:5},"Splash Lunge",0.90,"Frogs can use strong back legs to leap."),
+  mkAnimal("Salamander","Amphibians","🦎",{size:3,str:3,spd:4},"Slippery Escape",0.88,"Some salamanders have slippery skin that can help them avoid predators."),
+  // added Amphibians
+  mkAnimal("Axolotl","Amphibians","🦎",{size:3,str:3,spd:4},"Gilly Wiggle",0.90,"Axolotls can regenerate body parts like limbs (in nature)."),
+  mkAnimal("Tree Frog","Amphibians","🐸",{size:2,str:3,spd:6},"Sticky Hop",0.91,"Some tree frogs have sticky toe pads for climbing."),
 
-  // INSECTS & ARTHROPODS
-  mkAnimal("Praying Mantis","Insects","🦗", {size:2,str:5,spd:7}, "Snap Grab", 0.95, "Praying mantises have lightning-fast grabbing forelegs."),
-  mkAnimal("Tarantula","Insects","🕷️", {size:3,str:6,spd:4}, "Hair Flick", 0.95, "Some tarantulas can flick itchy hairs to defend themselves."),
-  mkAnimal("Scorpion","Insects","🦂", {size:2,str:6,spd:5}, "Stinger Jab", 0.96, "Scorpions glow under ultraviolet (UV) light!"),
-  mkAnimal("Giant Centipede","Insects","🐛", {size:3,str:7,spd:7}, "Venom Pinch", 1.00, "Centipedes use venom claws (not jaws) to capture prey."),
+  // INSECTS & ARTHROPODS (original + more)
+  mkAnimal("Praying Mantis","Insects","🦗",{size:2,str:5,spd:7},"Snap Grab",0.95,"Praying mantises have lightning-fast grabbing forelegs."),
+  mkAnimal("Tarantula","Insects","🕷️",{size:3,str:6,spd:4},"Hair Flick",0.95,"Some tarantulas can flick itchy hairs to defend themselves."),
+  mkAnimal("Scorpion","Insects","🦂",{size:2,str:6,spd:5},"Stinger Jab",0.96,"Scorpions glow under ultraviolet (UV) light!"),
+  mkAnimal("Giant Centipede","Insects","🐛",{size:3,str:7,spd:7},"Venom Pinch",1.00,"Centipedes use venom claws (not jaws) to capture prey."),
+  // added Insects
+  mkAnimal("Dragonfly","Insects","🦋",{size:2,str:4,spd:9},"Aerial Zip",0.98,"Dragonflies are speedy fliers and great hunters of insects."),
+  mkAnimal("Beetle","Insects","🪲",{size:2,str:5,spd:4},"Shell Bump",0.95,"Beetles have hard wing covers called elytra."),
+  mkAnimal("Ant","Insects","🐜",{size:1,str:4,spd:6},"Team Carry",0.92,"Ants work together and can carry many times their own weight."),
+  mkAnimal("Honeybee","Insects","🐝",{size:1,str:3,spd:6},"Buzz Blitz",0.90,"Bees help pollinate many flowering plants."),
 ];
 
-// Build 4 moves for each animal (1 manual + 3 generated)
+/* Move pools by category (gives every animal 3 extra moves automatically) */
 const MOVE_POOLS = {
   Land: [
     {name:"Power Charge", power:1.02, fact:"Some land animals can accelerate quickly for a surprise hit."},
     {name:"Grapple Toss", power:1.00, fact:"Strength and balance help in close-range tussles."},
     {name:"Stomp Shock", power:0.98, fact:"Big feet can create a strong impact on the ground."},
     {name:"Feint & Strike", power:1.01, fact:"Trick moves can help land a hit at the right moment."},
+    {name:"Shoulder Bash", power:1.00, fact:"A solid bump can push an opponent off balance."},
   ],
   Ocean: [
     {name:"Current Dash", power:1.02, fact:"Ocean animals can use currents to move efficiently."},
     {name:"Deep Dive", power:0.99, fact:"Some sea animals can dive very deep where it’s dark and cold."},
     {name:"Tail Whip", power:1.00, fact:"A strong tail is like a powerful motor in water."},
     {name:"Bubble Burst", power:0.97, fact:"Air bubbles can confuse enemies underwater for a moment."},
+    {name:"Wave Surge", power:1.01, fact:"Some swimmers can burst forward with a powerful kick."},
   ],
   Birds: [
     {name:"Wing Gust", power:0.98, fact:"Bird wings can create strong gusts of air when flapping hard."},
     {name:"Talon Slash", power:1.02, fact:"Many birds of prey use talons to grip tightly."},
     {name:"Sky Fakeout", power:1.00, fact:"Quick direction changes help birds dodge in mid-air."},
     {name:"Beak Jab", power:0.97, fact:"Beaks are handy tools for pecking and grabbing."},
+    {name:"Soar Sweep", power:0.99, fact:"Gliding can conserve energy for the next burst."},
   ],
   Reptiles: [
     {name:"Scale Shield", power:0.95, fact:"Reptile scales help protect their bodies."},
     {name:"Ambush Snap", power:1.02, fact:"Some reptiles wait still… then strike fast."},
     {name:"Tail Lash", power:0.99, fact:"Some reptiles use tails for balance—or defense."},
     {name:"Heat Burst", power:0.97, fact:"Reptiles often rely on warmth to get moving quickly."},
+    {name:"Sand Shuffle", power:0.98, fact:"Some reptiles move quickly across hot ground in short bursts."},
   ],
   Amphibians: [
     {name:"Sticky Leap", power:0.99, fact:"Some amphibians have sticky skin or toes for gripping."},
     {name:"Splash Screen", power:0.95, fact:"A quick splash can distract an opponent."},
     {name:"Quick Dart", power:1.01, fact:"Small amphibians can move in sudden bursts."},
     {name:"Camouflage Chill", power:0.97, fact:"Blending in can help avoid being targeted."},
+    {name:"Wet Wiggle", power:0.98, fact:"Smooth skin can help slip away fast."},
   ],
   Insects: [
     {name:"Rapid Skitter", power:1.00, fact:"Many insects can sprint in tiny, speedy bursts."},
     {name:"Armor Plate", power:0.95, fact:"Hard exoskeletons act like natural armor."},
     {name:"Pinch Strike", power:1.02, fact:"Some arthropods use strong pincers for gripping."},
     {name:"Startle Buzz", power:0.97, fact:"Sudden sounds or vibrations can surprise predators."},
+    {name:"Swarm Shuffle", power:0.98, fact:"Teamwork can make small creatures feel much stronger."},
   ],
 };
 
-// default pool if category not found
 const DEFAULT_POOL = [
   {name:"Wild Combo", power:1.00, fact:"Different animals have different tricks to survive!"},
   {name:"Dodge & Counter", power:1.00, fact:"Being quick helps avoid hits and strike back."},
@@ -652,9 +769,9 @@ const DEFAULT_POOL = [
   {name:"Big Impact", power:1.02, fact:"Mass and momentum can make hits feel stronger."},
 ];
 
+/* Build 4 moves for each animal */
 for(const a of ANIMALS){
   const pool = MOVE_POOLS[a.category] || DEFAULT_POOL;
-  // Create 4 moves: primary + 3 from pool (shuffled)
   const picks = shuffle([...pool]).slice(0,3);
   a.moves = [
     { name: a.primaryMoveName, power: a.primaryMovePower, fact: a.primaryMoveFact, isPrimary:true },
@@ -663,19 +780,16 @@ for(const a of ANIMALS){
 }
 
 /* =========================================
-   UI + Game state
+   Game state + UI
    ========================================= */
 let stage = "select"; // select | battle | quiz
 let picking = 1; // 1 then 2
-
 let p1 = null, p2 = null;
 let p1HP = 100, p2HP = 100;
-
 let battleStarted = false;
 let currentTurn = 1; // 1 or 2
-let inputLocked = false; // while pop fact showing
-
-let shownFacts = []; // {attackerId, moveName, fact, correctAnswerString}
+let inputLocked = false;
+let shownFacts = []; // {animal, moveName, fact}
 let quizState = { questions: [], answers: new Map(), score: 0, locked: false };
 
 const el = (id)=>document.getElementById(id);
@@ -694,8 +808,6 @@ const searchInput = el("searchInput");
 const startBattleBtn = el("startBattleBtn");
 const resetBtn = el("resetBtn");
 const randomBtn = el("randomBtn");
-const homeBtn = el("homeBtn");
-const quizHomeBtn = el("quizHomeBtn");
 
 const fighter1 = el("fighter1");
 const fighter2 = el("fighter2");
@@ -711,14 +823,18 @@ const popFact = el("popFact");
 const popTitle = el("popTitle");
 const popBody = el("popBody");
 
+const winOverlay = el("winOverlay");
+const winBig = el("winBig");
+const winSmall = el("winSmall");
+
 const quizWrap = el("quizWrap");
 const quizScoreHint = el("quizScoreHint");
 const picksSummary = el("picksSummary");
+const quizHomeBtn = el("quizHomeBtn");
+
 const toast = el("toast");
 
-/* =========================================
-   Init
-   ========================================= */
+/* Init */
 initCategoryOptions();
 renderGrid();
 syncRightPanel();
@@ -736,7 +852,7 @@ randomBtn.addEventListener("click", ()=>{
   chooseAnimal(pick);
 });
 
-resetBtn.addEventListener("click", resetAll);
+resetBtn.addEventListener("click", goHome);
 
 startBattleBtn.addEventListener("click", ()=>{
   if(!p1 || !p2) return;
@@ -749,16 +865,9 @@ startBattleBtn.addEventListener("click", ()=>{
   updateTurnUI();
 });
 
-homeBtn.addEventListener("click", ()=>{
-  goHome();
-});
-quizHomeBtn.addEventListener("click", ()=>{
-  goHome();
-});
+quizHomeBtn.addEventListener("click", goHome);
 
-/* =========================================
-   Selection
-   ========================================= */
+/* Selection */
 function initCategoryOptions(){
   const cats = Array.from(new Set(ANIMALS.map(a=>a.category))).sort();
   for(const c of cats){
@@ -777,7 +886,6 @@ function filteredAnimals(){
     return okCat && okQ;
   });
 }
-
 function renderGrid(){
   const list = filteredAnimals();
   animalGrid.innerHTML = "";
@@ -840,9 +948,6 @@ function syncStageUI(){
   battleView.style.display = (stage==="battle") ? "" : "none";
   quizView.style.display = (stage==="quiz") ? "" : "none";
 
-  homeBtn.style.display = "none";
-  quizHomeBtn.disabled = true;
-
   if(stage==="select"){
     stageTitle.textContent = "Stage 1: Choose animals";
     stageDesc.textContent = "Player 1 picks first, then Player 2. Every animal has 4 moves in battle.";
@@ -850,7 +955,7 @@ function syncStageUI(){
   }
   if(stage==="battle"){
     stageTitle.textContent = "Stage 2: Battle (YOU control the moves)";
-    stageDesc.textContent = "Take turns pressing move buttons. A fun fact pops up for 2–3 seconds each move.";
+    stageDesc.textContent = "Take turns pressing move buttons. Fun facts pop up for readability.";
   }
   if(stage==="quiz"){
     stageTitle.textContent = "Stage 3: Quiz time!";
@@ -858,9 +963,7 @@ function syncStageUI(){
   }
 }
 
-/* =========================================
-   Battle
-   ========================================= */
+/* Battle UI */
 function buildBattleUI(){
   p1HP = 100; p2HP = 100;
   battleStarted = false;
@@ -869,14 +972,47 @@ function buildBattleUI(){
   shownFacts = [];
   battleLog.innerHTML = "";
   turnHint.textContent = "Press Start Battle…";
-
   startBattleBtn.disabled = false;
+
+  winOverlay.classList.remove("show");
 
   fighter1.innerHTML = fighterTemplate(p1, p1HP, "p1");
   fighter2.innerHTML = fighterTemplate(p2, p2HP, "p2");
 
   renderMoveButtons();
   updateTurnUI();
+}
+
+function fighterTemplate(a, hp, side){
+  const hpPct = Math.max(0, Math.min(100, hp));
+  const emojiId = side === "p1" ? "p1Emoji" : "p2Emoji";
+  const spriteClass = side === "p1" ? "sprite p1" : "sprite p2";
+  return `
+    <div class="fighterTop">
+      <div class="fighterName">
+        <div class="emoji ${spriteClass}" id="${emojiId}">${escapeHtml(a.emoji)}</div>
+        <div>
+          <div>${escapeHtml(a.name)}</div>
+          <div class="mini">${escapeHtml(a.category)} • 4 moves</div>
+        </div>
+      </div>
+      <div class="tag">${side==="p1" ? "Player 1" : "Player 2"}</div>
+    </div>
+    <div>
+      <div class="hpbar"><div class="hpfill" style="width:${hpPct}%"></div></div>
+      <div class="hptext"><span>HP</span><span><b>${Math.round(hpPct)}</b>/100</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${a.stats.size}</b><span>Size</span></div>
+      <div class="stat"><b>${a.stats.str}</b><span>Strength</span></div>
+      <div class="stat"><b>${a.stats.spd}</b><span>Speed</span></div>
+    </div>
+  `;
+}
+
+function updateFighterUI(){
+  fighter1.innerHTML = fighterTemplate(p1, p1HP, "p1");
+  fighter2.innerHTML = fighterTemplate(p2, p2HP, "p2");
 }
 
 function renderMoveButtons(){
@@ -911,36 +1047,6 @@ function updateTurnUI(){
   Array.from(p2Moves.querySelectorAll("button")).forEach(btn=> btn.disabled = !p2Active);
 }
 
-function fighterTemplate(a, hp, side){
-  const hpPct = Math.max(0, Math.min(100, hp));
-  return `
-    <div class="fighterTop">
-      <div class="fighterName">
-        <div class="emoji">${escapeHtml(a.emoji)}</div>
-        <div>
-          <div>${escapeHtml(a.name)}</div>
-          <div class="mini">${escapeHtml(a.category)} • 4 moves</div>
-        </div>
-      </div>
-      <div class="tag">${side==="p1" ? "Player 1" : "Player 2"}</div>
-    </div>
-    <div>
-      <div class="hpbar"><div class="hpfill" style="width:${hpPct}%"></div></div>
-      <div class="hptext"><span>HP</span><span><b>${Math.round(hpPct)}</b>/100</span></div>
-    </div>
-    <div class="stats">
-      <div class="stat"><b>${a.stats.size}</b><span>Size</span></div>
-      <div class="stat"><b>${a.stats.str}</b><span>Strength</span></div>
-      <div class="stat"><b>${a.stats.spd}</b><span>Speed</span></div>
-    </div>
-  `;
-}
-
-function updateFighterUI(){
-  fighter1.innerHTML = fighterTemplate(p1, p1HP, "p1");
-  fighter2.innerHTML = fighterTemplate(p2, p2HP, "p2");
-}
-
 function logEntry(html){
   const div = document.createElement("div");
   div.className = "entry";
@@ -953,15 +1059,13 @@ function computeDamage(att, def, movePower){
   const D = def.stats;
 
   const base = (A.str*0.52 + A.spd*0.32 + A.size*0.16) * 7;
-
   const matchup =
     (A.spd / Math.max(1, D.spd)) * 0.35 +
     (A.str / Math.max(1, D.str)) * 0.45 +
     (A.size / Math.max(1, D.size)) * 0.20;
 
-  const rng = 0.90 + Math.random()*0.24; // 0.90..1.14
+  const rng = 0.90 + Math.random()*0.24;
   let dmg = base * matchup * movePower * rng;
-
   dmg = Math.max(6, Math.min(30, dmg));
   return Math.round(dmg);
 }
@@ -969,7 +1073,6 @@ function computeDamage(att, def, movePower){
 async function onMoveClick(player, moveIndex){
   if(!battleStarted) return showToast("Press Start Battle first!");
   if(inputLocked) return;
-
   if(player !== currentTurn) return;
 
   const attacker = (player===1) ? p1 : p2;
@@ -984,43 +1087,53 @@ async function onMoveClick(player, moveIndex){
   if(player===1) p2HP = Math.max(0, p2HP - dmg);
   else p1HP = Math.max(0, p1HP - dmg);
 
+  // animate sprites + hit
+  animateAttack(player);
+
   updateFighterUI();
 
-  // hit animation
+  // defender shake
   const hitEl = (player===1) ? fighter2 : fighter1;
   hitEl.classList.add("hit");
   setTimeout(()=>hitEl.classList.remove("hit"), 380);
 
-  // log
   logEntry(`
     <b>${escapeHtml(attacker.name)}</b> used <b>${escapeHtml(move.name)}</b> and dealt <b>${dmg}</b> damage!
     <div class="meta">✨ Fun fact: ${escapeHtml(move.fact)}</div>
   `);
 
-  // store for quiz creation
-  shownFacts.push({
-    animal: attacker.name,
-    moveName: move.name,
-    fact: move.fact
-  });
+  shownFacts.push({ animal: attacker.name, moveName: move.name, fact: move.fact });
 
-  // pop-up fact (2.6s)
   showPopFact(`${attacker.name} — ${move.name}`, move.fact, 2600);
-
-  // wait for readability
   await sleep(2600);
 
-  // check win
   if(p1HP<=0 || p2HP<=0){
-    endBattle();
+    endBattleBigSplash();
     return;
   }
 
-  // next turn
   currentTurn = (currentTurn===1) ? 2 : 1;
   turnHint.textContent = `Player ${currentTurn}, choose a move!`;
   inputLocked = false;
   updateTurnUI();
+}
+
+function animateAttack(player){
+  const e1 = document.getElementById("p1Emoji");
+  const e2 = document.getElementById("p2Emoji");
+  if(!e1 || !e2) return;
+
+  if(player===1){
+    e1.classList.remove("attackP1");
+    void e1.offsetWidth; // reflow so animation restarts
+    e1.classList.add("attackP1");
+    setTimeout(()=>e1.classList.remove("attackP1"), 380);
+  }else{
+    e2.classList.remove("attackP2");
+    void e2.offsetWidth;
+    e2.classList.add("attackP2");
+    setTimeout(()=>e2.classList.remove("attackP2"), 380);
+  }
 }
 
 function showPopFact(title, fact, ms){
@@ -1031,7 +1144,7 @@ function showPopFact(title, fact, ms){
   showPopFact._t = setTimeout(()=> popFact.classList.remove("show"), ms);
 }
 
-function endBattle(){
+function endBattleBigSplash(){
   inputLocked = true;
   updateTurnUI();
 
@@ -1042,32 +1155,30 @@ function endBattle(){
   logEntry(`<b>🏆 Winner: Player ${winner.player} — ${escapeHtml(winner.animal.name)}!</b>
             <div class="meta">${escapeHtml(loser.animal.name)} has run out of HP.</div>`);
 
-  homeBtn.style.display = ""; // allow going home after quiz too
+  // BIG centered winner splash
+  winBig.textContent = `🏆 Player ${winner.player} wins!`;
+  winSmall.textContent = `${winner.animal.emoji} ${winner.animal.name} defeats ${loser.animal.emoji} ${loser.animal.name}`;
+  winOverlay.classList.add("show");
+
   showToast(`Winner: ${winner.animal.name}! Quiz time…`);
 
-  // go to quiz shortly
   setTimeout(()=>{
     stage = "quiz";
     syncStageUI();
     buildQuiz();
-  }, 700);
+  }, 1500);
 }
 
-/* =========================================
-   Quiz (built from facts shown)
-   - 4 questions
-   - Each question: "Which fun fact was shown for [animal — move]?"
-   ========================================= */
+/* Quiz: based on facts shown */
 function buildQuiz(){
   quizState = { questions: [], answers: new Map(), score: 0, locked: false };
   quizWrap.innerHTML = "";
   quizScoreHint.textContent = "Score: 0 / 4";
   quizHomeBtn.disabled = true;
 
-  // Need a pool of at least 4 facts
   let factPool = uniqueFacts(shownFacts);
 
-  // If players used fewer than 4 moves total, pad with some other move facts from chosen animals
+  // pad if too few moves were used
   if(factPool.length < 4){
     const extra = [
       ...p1.moves.map(m=>({animal:p1.name, moveName:m.name, fact:m.fact})),
@@ -1075,15 +1186,13 @@ function buildQuiz(){
     ];
     factPool = uniqueFacts([...factPool, ...extra]);
   }
-
-  // Still small? Pad from global moves
   if(factPool.length < 4){
     for(const a of ANIMALS){
       for(const m of a.moves){
         factPool.push({animal:a.name, moveName:m.name, fact:m.fact});
-        if(factPool.length>=12) break;
+        if(factPool.length>=14) break;
       }
-      if(factPool.length>=12) break;
+      if(factPool.length>=14) break;
     }
     factPool = uniqueFacts(factPool);
   }
@@ -1091,15 +1200,11 @@ function buildQuiz(){
   shuffle(factPool);
   const chosen = factPool.slice(0,4);
 
-  // Build 4 questions: pick 1 correct fact + 3 decoys
-  for(let i=0;i<chosen.length;i++){
-    const correct = chosen[i];
-
+  for(const correct of chosen){
     const decoys = shuffle(factPool.filter(x=>x.fact!==correct.fact)).slice(0,3);
     const options = shuffle([correct.fact, ...decoys.map(d=>d.fact)]);
-
     quizState.questions.push({
-      prompt: `Which fun fact did you just see for: ${correct.animal} — ${correct.moveName}?`,
+      prompt: `Which fun fact did you see for: ${correct.animal} — ${correct.moveName}?`,
       options,
       answer: correct.fact
     });
@@ -1131,7 +1236,6 @@ function answerQuestion(qIndex, choice, optEl, optsWrap){
 
   const q = quizState.questions[qIndex];
   const correct = (choice === q.answer);
-
   quizState.answers.set(qIndex, choice);
 
   const children = Array.from(optsWrap.children);
@@ -1160,16 +1264,12 @@ function answerQuestion(qIndex, choice, optEl, optsWrap){
     sum.innerHTML = `<b>Final quiz score:</b> ${quizState.score} / 4`;
     quizWrap.appendChild(sum);
 
-    // enable home
     quizHomeBtn.disabled = false;
   }
 }
 
-/* =========================================
-   Home / Reset
-   ========================================= */
+/* Home / Reset */
 function goHome(){
-  // back to selection with fresh picks
   stage = "select";
   picking = 1;
   p1 = null; p2 = null;
@@ -1180,6 +1280,8 @@ function goHome(){
   shownFacts = [];
   quizState = { questions: [], answers: new Map(), score: 0, locked: false };
 
+  winOverlay.classList.remove("show");
+
   searchInput.value = "";
   categorySelect.value = "All";
   renderGrid();
@@ -1188,24 +1290,11 @@ function goHome(){
   showToast("Back to Home! Pick new animals.");
 }
 
-function resetAll(){
-  goHome();
-}
-
-/* =========================================
-   Helpers
-   ========================================= */
+/* Utility */
 function mkAnimal(name, category, emoji, stats, primaryMoveName, primaryMovePower, primaryMoveFact){
-  return {
-    id: slug(name),
-    name, category, emoji,
-    stats,
-    primaryMoveName, primaryMovePower, primaryMoveFact,
-    moves: []
-  };
+  return { id: slug(name), name, category, emoji, stats, primaryMoveName, primaryMovePower, primaryMoveFact, moves: [] };
 }
 function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
-
 function showToast(msg){
   toast.textContent = msg;
   toast.classList.add("show");
